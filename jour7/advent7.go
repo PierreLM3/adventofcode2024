@@ -18,22 +18,24 @@ func main() {
 
 	sumAll := 0
 
-	for i := 0; i < lineTotal; i++ {
-		var nbValues = len(values[i])
-
-		var allCombinaisons = int(math.Pow(3, float64(nbValues-1)))
-		for j := 0; j < allCombinaisons; j++ {
-			combin := leftPad(strconv.FormatInt(int64(j), 3), "0", nbValues-1)
-			res := calc(values[i], combin)
-
-			if res == key[i] {
-				//fmt.Printf("solve %v=%v\n", key[i], combin)
-				sumAll += key[i]
-				break
-			}
-		}
+	for i := range lineTotal {
+		sumAll += processAllCombin(key[i], values[i])
 	}
 	println(sumAll)
+}
+
+func processAllCombin(key int, values []int) int {
+	var nbValues = len(values)
+	var allCombinaisons = int(math.Pow(3, float64(nbValues-1)))
+
+	for j := range allCombinaisons {
+		combin := leftPad(strconv.FormatInt(int64(j), 3), "0", nbValues-1)
+		if calc(values, combin) == key {
+			return key
+		}
+	}
+
+	return 0
 }
 
 func leftPad(s string, padStr string, pLen int) string {
@@ -41,17 +43,20 @@ func leftPad(s string, padStr string, pLen int) string {
 }
 
 func calc(values []int, combin string) int {
-	var c = values[0]
-	for i := 0; i < len(combin); i++ {
-		if combin[i] == 48 {
-			c += values[i+1]
-		} else if combin[i] == 49 {
-			c *= values[i+1]
-		} else {
-			c, _ = strconv.Atoi(fmt.Sprintf("%d%d", c, values[i+1]))
+	var acc = values[0]
+
+	for i, crune := range combin {
+		nextValue := values[i+1]
+		switch crune {
+		case '0':
+			acc += nextValue
+		case '1':
+			acc *= nextValue
+		default:
+			acc, _ = strconv.Atoi(fmt.Sprintf("%d%d", acc, nextValue))
 		}
 	}
-	return c
+	return acc
 }
 
 func read() ([]int, [][]int) {
