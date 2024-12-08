@@ -12,20 +12,14 @@ var lineTotal = 50 // 12
 func main() {
 
 	var antennaMaps = read()
-	printMap(antennaMaps)
 
 	antinodesMap := make([][]rune, lineTotal)
-	
 
 	for i := range lineTotal {
 		antinodesMap[i] = make([]rune, lineTotal)
 		for j := range lineTotal {
 			antinodesMap[i][j] = '.'
 		}
-	}
-
-	for _, n := range searchNext(antennaMaps, '0', 1, 1) {
-		fmt.Printf("%v:%v\n", n[0], n[1])
 	}
 
 	for i := range lineTotal {
@@ -55,11 +49,12 @@ func countAntinodes(antinodesMap [][]rune) int {
 
 func putAntinodes(antinodesMap [][]rune, inputI int, inputJ int, nexts [][2]int) {
 	antinodesMap[inputI][inputJ] = '#'
-	
+
 	for _, next := range nexts {
 		dist1i := next[0] - inputI
-		antinode1i := inputI - dist1i
 		dist1j := next[1] - inputJ
+
+		antinode1i := inputI - dist1i
 		antinode1j := inputJ - dist1j
 
 		for antinode1i >= 0 && antinode1j >= 0 && antinode1j < lineTotal {
@@ -93,7 +88,7 @@ func searchNext(mmap [][]rune, letter rune, inputI int, inputJ int) [][2]int {
 	}
 
 	for i := inputI + 1; i < lineTotal; i++ {
-		for j := 0; j < lineTotal; j++ {
+		for j := range lineTotal {
 			if mmap[i][j] == letter {
 				nexts = append(nexts, [2]int{i, j})
 			}
